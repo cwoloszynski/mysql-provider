@@ -75,6 +75,8 @@ public final class Provider: Vapor.Provider {
             }
 
             let port = mysql["port"]?.uint
+            
+            let subSecondResolution = mysql["subSecondResolution"]?.int ?? 0
 
             try self.init(
                 host: host,
@@ -83,7 +85,8 @@ public final class Provider: Vapor.Provider {
                 database: database,
                 port: port,
                 flag: flag,
-                encoding: encoding
+                encoding: encoding,
+                subSecondResolution: subSecondResolution
             )
         }
     }
@@ -130,6 +133,8 @@ public final class Provider: Vapor.Provider {
          - parameter encoding: Usually "utf8", but something like "utf8mb4" may be
              used, since "utf8" does not fully implement the UTF8 standard and does
              not support Unicode.
+        - parameter subSecondResolution: Usually 0 for no fractional seconds and up to 6
+        for microsecond resolution
 
 
         - throws: `Error.connection(String)` if the call to
@@ -142,7 +147,8 @@ public final class Provider: Vapor.Provider {
         database: String,
         port: UInt? = nil,
         flag: UInt? = nil,
-        encoding: String? = nil
+        encoding: String? = nil,
+        subSecondResolution: Int = 0
     ) throws {
         let driver = try MySQLDriver(
             host: host,
@@ -151,7 +157,8 @@ public final class Provider: Vapor.Provider {
             database: database,
             port: port ?? 3306,
             flag: flag ?? 0,
-            encoding: encoding ?? "utf8"
+            encoding: encoding ?? "utf8",
+            subSecondResolution: subSecondResolution
         )
 
         self.driver = driver
